@@ -3,6 +3,9 @@ import multer from "multer";
 import SpeechToTextV1 from "ibm-watson/speech-to-text/v1.js";
 import { IamAuthenticator } from "ibm-watson/auth/index.js";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+
 dotenv.config();
 
 const app = express();
@@ -26,6 +29,9 @@ app.post("/postAudio", upload.single("audio"), async (req, res) => {
         const { file } = req;
 
         if (file) {
+            const fileName = `${file.originalname }-${ Date.now() }${path.extname(file.originalname)}`;
+            fs.writeFileSync(fileName, file.buffer);
+
             console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",file.mimetype)
             const params = {
                 audio: file.buffer,
