@@ -1,0 +1,19 @@
+{
+  "name": "speechpal-backend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.mjs",
+  "scripts": {
+    "start": "node index.mjs",
+    "dev": "nodemon index.mjs"
+  },
+  "author": "Madhawa97",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
