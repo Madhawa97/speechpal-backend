@@ -4,7 +4,7 @@ import SpeechToTextV1 from "ibm-watson/speech-to-text/v1.js";
 import { IamAuthenticator } from "ibm-watson/auth/index.js";
 import dotenv from "dotenv";
 import fs from "fs";
-import path from "path";
+import cors from 'cors';
 
 dotenv.config();
 
@@ -18,6 +18,8 @@ const speechToText = new SpeechToTextV1({
     }),
     serviceUrl: process.env.SERVICE_URL,
 });
+
+app.use(cors());
 
 app.get("/", (req, res) => {
     res.send("Audio Server Running...");
