@@ -26,24 +26,32 @@ app.get("/", (req, res) => {
 });
 
 app.post("/postAudio", upload.single("audio"), async (req, res) => {
-    console.log("Request Processing...")
     try {
         const { file } = req;
 
         if (file) {
-            const fileName = `${file.originalname }-${ Date.now() }${path.extname(file.originalname)}`;
-            fs.writeFileSync(fileName, file.buffer);
+            const fileName = `${file.originalname}-${Date.now()}.webm`;
+            fs.writeFileSync(fileName, file.buffer);                   // !TODO - Save these in a db and add auth
+            console.log(">>>>>>>>>>>>> Request Processing...");
 
-            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",file.mimetype)
             const params = {
                 audio: file.buffer,
-                contentType: file.mimetype,
+                contentType: "audio/webm",
             };
-
             const { result } = await speechToText.recognize(params);
+            console.log(JSON.stringify(result));
 
             if (result.results.length > 0) {
-                const transcript = result.results[0].alternatives[0].transcript;
+                const results = result.results;
+                const transcriptions = results.map(result => {
+                    const alternatives = result.alternatives;
+                    const highestConfidenceAlt = alternatives.reduce((prev, current) => {
+                        return prev.confidence > current.confidence ? prev : current;
+                    }, {});
+                    return highestConfidenceAlt.transcript;
+                });
+
+                const transcript = transcriptions.join(' ');               
                 res.json({ transcript });
             } else {
                 res.json({ transcript: null });
